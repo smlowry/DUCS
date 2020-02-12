@@ -17,7 +17,6 @@ var storage = multer.diskStorage({
 // set upload object to store pictures to correct location
 var upload = multer({ storage: storage })
 
-
 // Get list of all images in the database
 router.get("/", function(req, res) {
     console.log("Getting images");
@@ -44,7 +43,13 @@ router.post('/', upload.single('photo'), function(req, res) {
         filename: req.file.filename,
         photo_name: req.body.photoName,
         album: req.body.album,
-        upload_date: new Date()
+        upload_date: new Date(),
+        description: req.body.description,
+        f_stop: req.body.f_stop,
+        s_speed: req.body.s_speed,
+        iso: req.body.iso,
+        focal_length: req.body.focal_length,
+        camera_type: req.body.camera_type
     });
     
     //var image = new Image(req.body);
