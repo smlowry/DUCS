@@ -28,7 +28,8 @@ router.get("/", function(req, res){
 router.post("/users", function(req, res, next) {
     
     //create a hash for the submitted password
-    bcrypt.hash("opensesame", null, null, function(err, hash) {
+    console.log(req.body.password);
+    bcrypt.hash(req.body.password, null, null, function(err, hash) {
     
     var newuser = new User({
       uid: req.body.uid,
