@@ -3,7 +3,7 @@ var jwt = require("jwt-simple");
 var User = require("../models/user");
 var router = require("express").Router();
 var bcrypt = require("bcrypt-nodejs");
-var bodyParser = require("body-parser")
+var bodyParser = require("body-parser");
 
 //router.use(bodyParser.json());
 //use urlencoded instead because we are posting form data
@@ -20,7 +20,6 @@ router.post("/users", function(req, res, next) {
       password: hash,
       full_name: req.body.full_name,
       date_created: new Date()
-//    status:   req.body.status
    });
 
  newuser.save(function(err) {

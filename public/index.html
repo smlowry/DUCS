@@ -35,6 +35,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/login.js"></script>
 </head>
 <body>
     
@@ -46,7 +47,7 @@
             <div class="card-body">
                 <div class="container" id="right">
                 
-                      <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-login" data-dismiss="modal">Login</span></a>
+                      <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-login" data-dismiss="modal" id="loginBtn">Login</span></a>
                         &nbsp; &nbsp; &nbsp; &nbsp;
                       <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-reg" data-dismiss="modal">Create A New Account</span></a>
                     
@@ -85,15 +86,15 @@ var User = db.model("User", {
 
   <form class="seminor-login-form" action="api/users" method="post">
     <div class="form-group">
-      <input type="email" class="form-control" required autocomplete="off" name="uid" id="uid">
+      <input type="email" class="form-control" required autocomplete="off" name="uid" id="uidAcc">
       <label class="form-control-placeholder" for="uid">Email address</label>
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" required autocomplete="off" name="full_name" id="full_name">
+      <input type="text" class="form-control" required autocomplete="off" name="full_name" id="full_nameAcc">
       <label class="form-control-placeholder" for="full_name">Full Name</label>
     </div>
     <div class="form-group">
-      <input type="password" class="form-control" required autocomplete="off" name="password" id="password">
+      <input type="password" class="form-control" required autocomplete="off" name="password" id="passwordAcc">
       <label class="form-control-placeholder" for="password">Password</label>
     </div>
     <div class="form-group">
@@ -155,7 +156,7 @@ var User = db.model("User", {
         </div>
 
         <div class="btn-check-log">
-            <button type="submit" class="btn-check-login">LOGIN</button>
+            <button type="submit" class="btn-check-login" id="submitBtn">LOGIN</button>
         </div>
 
 
