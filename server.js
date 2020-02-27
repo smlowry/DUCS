@@ -16,6 +16,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 router.use("/api/images", require("./api/images"));
 router.use("/api", require('./api/users'));
+router.use("/api", require('./api/auth'));
 
 app.use(router);
 

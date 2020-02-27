@@ -7,7 +7,6 @@ var User = db.model("User", {
     password:  { type: String, required: true },
     full_name: { type: String, required: true},
     date_created: { type: Date, default: Date.now },
-//    status:    String
 });
 
 module.exports = User;
