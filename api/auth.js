@@ -12,6 +12,7 @@ var config = require("../configuration/config.json")
 router.use(bodyParser.urlencoded({extended: true}));
 
 
+
 // For encoding/decoding JWT
 var secret = config.secret;
 
@@ -21,7 +22,7 @@ router.post("/auth", function(req, res) {
 // Get user from the database
    User.findOne({ uid: req.body.uid }, function(err, user) {
       if (err) throw err;
-
+       
       if (!user) {
          // Username not in the database
          res.status(401).json({ error: "Invalid username/password"});
@@ -45,6 +46,7 @@ router.post("/auth", function(req, res) {
       }
    });
 });
+
 
 
 module.exports = router;

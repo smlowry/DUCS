@@ -12,6 +12,16 @@ router.use(bodyParser.urlencoded({extended: true}));
 // Add a new user to the database
 router.post("/users", function(req, res, next) {
     
+    
+    User.findOne({ uid: req.body.uid }, function(err, user) {
+      if (err) throw err;
+       
+      if (user) {
+         // Username already in the database
+         res.status(401).json({ error: "Username already exists"});
+      }
+    })
+    
     //create a hash for the submitted password
     bcrypt.hash(req.body.password, null, null, function(err, hash) {
     
