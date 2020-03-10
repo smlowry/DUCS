@@ -14,8 +14,9 @@ $(document).ready(function() {
        });
 
     }
-       $("#loginBtn").click(function() {
+       $("#submitBtn").click(function() {
           login($("#uid").val(), $("#password").val());  
             console.log(window.localStorage.getItem("token"))
               });
+
 })
