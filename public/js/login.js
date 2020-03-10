@@ -1,5 +1,3 @@
-//store the token in local host and post it to the console. 
-
 $(document).ready(function() {
    
     console.log("token: ")
@@ -20,16 +18,5 @@ $(document).ready(function() {
           login($("#uid").val(), $("#password").val());  
             console.log(window.localStorage.getItem("token"))
               });
-    
-//    function displayStatus() { 
-//       var token = window.localStorage.getItem("token");
-//
-//       $.ajax({
-//          //url: "/api/status", 
-//          type: "GET",
-//          headers: { "X-Auth": token }
-//       }).done(function(data) {
-//            window.location.href = 'http://127.0.0.1:59588/public/home.html';
-//          });
-//    }
+
 })
