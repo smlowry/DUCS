@@ -38,6 +38,7 @@ router.post("/auth", function(req, res) {
                // Send back a token that contains the user's username
                var token = jwt.encode({ uid: user.uid }, secret);
                res.json({ token: token });
+               res.redirect('upload.html')
             }
             else {
                res.status(401).json({ error: "Invalid username/password"});
