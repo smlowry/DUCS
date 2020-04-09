@@ -1,20 +1,20 @@
 // 1. api/page?pageid=#### was added in Sprint 3
 
-var Page = require('../models/page');
-var User = require('../models/user')
-var router = require('express').Router();
-var path = require('path');
-var fs = require('fs');
-var crypto = require('crypto')
-var jwt = require('jwt-simple')
-var config = require('../configuration/config.json');
+const Page = require('../models/page');
+const User = require('../models/user')
+const router = require('express').Router();
+const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto')
+const jwt = require('jwt-simple')
+const config = require('../configuration/config.json');
 
-var DEBUG = false;
+const DEBUG = false;
 
 var secret = config.secret;
 
 
-router.get('/', function(req,res) {
+router.get('/', (req,res)=> {
     // 1. authenticate the user token
     if (DEBUG)
         console.log('entered api/page');
@@ -26,11 +26,11 @@ router.get('/', function(req,res) {
     }
     
     // X-Auth should contain the token
-    var token = req.headers["x-auth"];
+    let token = req.headers["x-auth"];
     if (DEBUG)
         console.log("token is: " + token);
     
-    var decoded
+    let decoded
     try {
         if (DEBUG)
             console.log("Trying to decode token");
@@ -42,10 +42,10 @@ router.get('/', function(req,res) {
         return res.status(401).json({error: "Invalid JWT"});
     }
     
-    var usr = decoded.username;
+    let usr = decoded.username;
 
     
-    User.findOne({uid: usr}, function(err, user) {
+    User.findOne({uid: usr}, (err, user)=> {
         if (err) {
             if (DEBUG)
                 console.log("Server could not fulfill request");
@@ -59,7 +59,7 @@ router.get('/', function(req,res) {
             // assert user authentication
             // 2. if autheticated
             // 2.1 find pageID in database
-            Page.findOne({pageID: req.query.pageid}, function(err, page) {
+            Page.findOne({pageID: req.query.pageid},(err, page)=> {
                 if (err) {
                     if (DEBUG)
                         console.log("Page: " + req.query.pageid + " not found");
@@ -71,7 +71,7 @@ router.get('/', function(req,res) {
                 if (page) {
                     //assert page was found
                     // 2.2.1 return status 200 and 2.2.2 return with pageName
-                    var path2Page = path.resolve("pages/" + page.pageName);
+                    let path2Page = path.resolve("pages/" + page.pageName);
                     return res.status(200).sendFile(path2page);
                 }
                 else {

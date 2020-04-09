@@ -1,23 +1,23 @@
-var Image = require('../models/image');
-var User = require('../models/user');
-var router = require("express").Router();
-var multer = require("multer");
-//var mthumb = require('../media-thumbnail');
-var path = require("path")
-var fs = require('fs');
-var crypto = require("crypto")
-var jwt = require("jwt-simple")
-var config =require("../configuration/config.json")
-
-var DEBUG = true;
+const Image = require('../models/image');
+const User = require('../models/user');
+const router = require("express").Router();
+const multer = require("multer");
+const mthumb = require('../media-thumbnail');
+const path = require("path")
+const fs = require('fs');
+const crypto = require("crypto")
+const jwt = require("jwt-simple")
+const config =require("../configuration/config.json")
+ 
+const DEBUG = true;
 var secret = config.secret;
 
 // SET STORAGE
 var storage = multer.diskStorage({
-      destination: function (req, file, cb) {
+      destination: (req, file, cb) => {
         cb(null, 'upload')
       },
-      filename: function (req, file, cb) {
+      filename: (req, file, cb) => {
         cb(null,  file.fieldname + '-' + Date.now() + path.extname(file.originalname))
       } 
     });
@@ -26,13 +26,13 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 
 // Get list of all images in the database
-router.get("/", function(req, res) {
+router.get("/", (req, res)=> {
    
    // 1. get the user's token'
-   var token = req.query.u;
+   let token = req.query.u;
     
    // 2. decode the token and validate the User
-   var decoded
+   let decoded
    try {
        if (DEBUG)
        console.log("Trying to decode token")
@@ -44,9 +44,9 @@ router.get("/", function(req, res) {
         return res.status(401).json({error: "Invalid JWT"});
    }
 
-   var usr = decoded.username; 
+   let usr = decoded.username; 
 
-   User.findOne({uid: usr}, function(err,user){
+   User.findOne({uid: usr}, (err,user)=>{
        if (err) {
             if (DEBUG)
                 console.log("Server error trying to find user.");
@@ -57,7 +57,7 @@ router.get("/", function(req, res) {
 
        if (user) {
            // 3. Find the user's images
-           Image.find({owner: user.uid}, function(err, img) {
+           Image.find({owner: user.uid},(err, img)=> {
                if (err) {
                     res.status(500).json({error: "Server error"});  
 		       }
@@ -79,7 +79,7 @@ router.get("/", function(req, res) {
 
 
 // Add a new image to the database
-router.post('/', upload.single('photo'), function(req, res) {
+router.post('/', upload.single('photo'), (req, res)=> {
     //log the file and upload to console
     if (req.file) {
         console.log("file: " + req.body.photoName +" saved on.");
@@ -99,11 +99,11 @@ router.post('/', upload.single('photo'), function(req, res) {
 	}
     
     //X_Auth should contain the token
-    var token = req.headers["x-auth"];
+    let token = req.headers["x-auth"];
     if (DEBUG)
         console.log("token is: " + token);
         
-    var decoded;
+    let decoded;
     try {
         if (DEBUG)
             console.log("trying to decode token");
@@ -120,8 +120,8 @@ router.post('/', upload.single('photo'), function(req, res) {
     if (DEBUG)
         console.log("Image upload User is: " + decoded.username);
 
-    var usr = decoded.username;
-    User.findOne({uid: usr}, function(err, user) {
+    let usr = decoded.username;
+    User.findOne({uid: usr}, (err, user)=> {
      if (err) {
         if (DEBUG)
             console.log("Invalid JWT: user not found");
@@ -131,15 +131,15 @@ router.post('/', upload.single('photo'), function(req, res) {
         console.log("Generating the image subdir for: " + user.uid)
 
     // 3. generate the path as imgPath = sha256 of usr.uid
-    var userSubdir = crypto.createHash('sha256').update(user.uid).digest("hex");
+    let userSubdir = crypto.createHash('sha256').update(user.uid).digest("hex");
     if (DEBUG)
         console.log("User Image Path: " + userSubdir);
 
     // 4. copt the file from uploads to images/imgPath/filename
 
-    var from = "upload/" + req.file.filename;
-    var to = "public/images/" + userSubdir + "/" + req.file.filename;
-    fs.copyFile(from, to, function(err) {
+    let from = "upload/" + req.file.filename;
+    let to = "public/images/" + userSubdir + "/" + req.file.filename;
+    fs.copyFile(from, to, (err)=> {
         if (err) {
             if (DEBUG)
                 console.log("Image copy from upload to " + to + " failed")
@@ -151,7 +151,7 @@ router.post('/', upload.single('photo'), function(req, res) {
         console.log("making the thumbnail image");
 
     // make a thumbnail of the image
-    var thumb = "public/images/" + userSubdir + "/thumbs" + req.file.filename;
+    let thumb = "public/images/" + userSubdir + "/thumbs" + req.file.filename;
 
     if (DEBUG)
         console.log("thumbnail image: " + thumb);
@@ -163,9 +163,9 @@ router.post('/', upload.single('photo'), function(req, res) {
                 width: 125
 			})
             
-            function then() {console.log("Thumbnail made"),
-                   function (err) {console.error(err)};
-                        }
+            .then(() => console.log("Thumbnail made"),
+                   err => console.error(err));
+                        
 
         if (DEBUG)
             console.log("Uploaded File copied to images subdirectory");
@@ -174,7 +174,7 @@ router.post('/', upload.single('photo'), function(req, res) {
         //he commented this part out
 
         //5. devare the file from uploads
-        fs.unlink(from, function(err) {
+        fs.unlink(from, (err)=> {
             if (err) {
                 console.log("File " + from + " was not devared.");
 			}  
@@ -202,7 +202,7 @@ router.post('/', upload.single('photo'), function(req, res) {
 	
         //var image = new Image(req.body);
     
-        img.save(function(err, img) {
+        img.save((err, img)=> {
             if (err) {
                 res.status(400).send(err);
             } else {

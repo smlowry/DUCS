@@ -10,16 +10,16 @@
 
 //4. Allow the user access to the their home page only if they have been authenticated. (ie. only if they have logged in)
 
-var jwt = require("jwt-simple");
-var User = require("../models/user");
-var router = require("express").Router();
-var bcrypt = require("bcrypt-nodejs");
-var bodyParser = require("body-parser");
-var fs = require("fs");
-var crypto = require("crypto")
-var config = require("../configuration/config.json")
+const jwt = require("jwt-simple");
+const User = require("../models/user");
+const router = require("express").Router();
+const bcrypt = require("bcrypt-nodejs");
+const bodyParser = require("body-parser");
+const fs = require("fs");
+const crypto = require("crypto")
+const config = require("../configuration/config.json")
 
-var DEBUG = false;
+const DEBUG = false;
 
 var secret = config.secret;
 router.use(bodyParser.json())
@@ -28,9 +28,9 @@ router.use(bodyParser.json())
 //router.use(bodyParser.urlencoded({extended: true}));
 
 // Add a new user to the database
-router.post("/users", function(req, res, next) {
+router.post("/users", (req, res)=> {
     
-    User.findOne({uid: {$eq: req.body.username}}, function(err, user) {
+    User.findOne({uid: {$eq: req.body.username}}, (err, user)=> {
          if(err) { 
              return res.status(500).json({error: "Server Error." });
         }
@@ -48,7 +48,7 @@ router.post("/users", function(req, res, next) {
               console.log("Name: " + req.body.full_name);
           }
         //create a hash for the submitted password
-        bcrypt.hash(req.body.password, null, null, function(err, hash) {  
+        bcrypt.hash(req.body.password, null, null, (err, hash) => {  
     
         var newUser = new User({
             //change from uid to username?
@@ -60,13 +60,13 @@ router.post("/users", function(req, res, next) {
         // create the users image storage
         if (DEBUG)
             console.log("New user: " + newUser.uid);
-        var usrDir = crypto.createHash('sha256').update(newUser.uid).digest("hex");
+        let usrDir = crypto.createHash('sha256').update(newUser.uid).digest("hex");
         
         if (DEBUG)
             console.log("making dir: " + userDir + " for user " + newUSer.uid);
             
-            var newDir = "public/images/" + usrDir;
-         fs.mkdir(newDir, function(err){
+            let newDir = "public/images/" + usrDir;
+         fs.mkdir(newDir, (err) =>{
             if (err) {
                 if (DEBUG)
                     console.log('new directory not created');
@@ -75,10 +75,10 @@ router.post("/users", function(req, res, next) {
             if (DEBUG)
                 console.log("Directory created");
             //make the thumbnail subdirectory
-            var subdir = newDir + "/thumbs";
+            let subdir = newDir + "/thumbs";
             if (DEBUG)
                 console.log("making thumbs directory")
-            fs.mkdir(subdir, function(err) {
+            fs.mkdir(subdir, (err)=> {
                 if(err) {
                     if (DEBUG)
                         console.log("thumbs subdirectory not created");
@@ -89,7 +89,7 @@ router.post("/users", function(req, res, next) {
                 
                 //assert: both directories are created
                 //save the user
-                 newuser.save(function(err) {
+                 newuser.save((err) => {
                          if (err) {
                              return res.status(500).json({error: "Server Error"});
                          }

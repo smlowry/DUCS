@@ -1,4 +1,3 @@
-
 <!--suppress ALL -->
 <!DOCTYPE html>
 <html lang="en">
@@ -7,29 +6,61 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-   
-    <script src="jquery-3.4.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    
+    <style>
+        body {
+            background: darkturquoise;
+        }
+        
+        .headMenuRight {
+            text-align: right
+        }
+        
+         .headMenuLeft {
+            text-align: left
+        }
+        
+        #userMenu {
+            visibility: hidden
+        }
+    </style>
+    
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous">
+    </script>
+    
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/authCtrl.js"></script>
+    <script src="js/photo.js"></script>
+    
 </head>
 <body>
-
     
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <div id="main" class="container">
     <div class="card border-success mt-5">
-        <h1 class="card-header">DUCS Image App - Home</h1>
+        <h1 class="card-header">DUCS Image Album App - Home</h1>
             <div class="card-body">
-                <div id="loginPanel" class="headMenuRight">
-                <button type="button" class="btn btn-link" data-toggle="modal" data-target="sem-login">Login</button>
-                <button type="button" class="btn btn-link" data-toggle="modal" data-target="sem-reg">Create Account</button>
-                </div>
-                <div id="userMenu" class="headMenuLeft">
+                <div class="headMenuRight" id="loginPanel">
+                
+                      <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-login" data-dismiss="modal" id="loginBtn">Login</span></a>
+                        &nbsp; &nbsp; &nbsp; &nbsp;
+                      <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-reg" data-dismiss="modal">Create A New Account</span></a>
+                    
+                 </div>
+                 <div class="headMenuLeft" id="userMenu">
                     <button id="menuPhotos" type="button" class="btn btn-link">Photos</button>
                 </div>
-                <div id="welcomeMsg" class="headMenuRight">
+                 <div id="welcomeMsg" class="headMenuRight">
                     <span></span>
                 </div>
           </div>
@@ -43,7 +74,9 @@
 </div>
 
     
-<!-- The Modal -->
+    
+    
+<!-- The REGISTER Modal -->
 <div class="modal fade seminor-login-modal" data-backdrop="static" id="sem-reg">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -54,68 +87,52 @@
         <button type="button" class="close" data-dismiss="modal">
             <span><i class="fa fa-times-circle" aria-hidden="true"></i></span>
         </button>
-          
-        <form class="seminor-login-form" id="regForm">
-<!--
-            
-          <div id='dupError' class="alert alert-danger alert-dismissible fade collapse">
+
+
+  <form class="seminor-login-form" id="regForm">
+      
+      <!-- dupError goes here -->
+       <div id='dupError' class="alert alert-danger alert-dismissible fade collapse">
               <div>
                 <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error</h4>
                 <button id="dupErrorCloseButton" type="button" class="close" data-dismiss="alert"></button>
               </div>
               <p>User Exists - Use a different email to create an account.</p>
           </div>
--->
-<!--
-          
-              
-              
-              
-  <form class="seminor-login-form" action="api/users" method="post">
--->
-    <div class="form-group">  
-      <input type="email" class="form-control" id= "username" required autocomplete="off" name="uid">
-      <label class="form-control-placeholder" for="uid">Email address</label>
-    </div>
-          
+      
     <div class="form-group">
-      <input type="text" class="form-control" id="name" required autocomplete="off" name="name">
-      <label class="form-control-placeholder" for="name">Last Name, First Name</label>
+      <input type="email" class="form-control" id="username" required autocomplete="off" name="userName">
+      <label class="form-control-placeholder" for="userName">Email address</label>
     </div>
-          
-<!--
-        <div id='passError' class="alert alert-danger alert-dismissible fade collapse">
+    <div class="form-group">
+      <input type="text" class="form-control" id="name" required autocomplete="off" name="full_name">
+      <label class="form-control-placeholder" for="full_name">Full Name</label>
+    </div>
+      
+      <!-- passError goes here  -->
+              <div id='passError' class="alert alert-danger alert-dismissible fade collapse">
           <div>
               <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error</h4>
                 <button id="passErrorCloseButton" type="button" class="close" data-dismiss="alert"></button>
             </div>
             <p>Password Mismatch - The passwords you enter must match.</p>
           </div>
--->
-          
+      
+      
     <div class="form-group">
       <input type="password" class="form-control" id="password" required autocomplete="off" name="password">
       <label class="form-control-placeholder" for="password">Password</label>
     </div>
-          
     <div class="form-group">
-      <input type="password" class="form-control" id="confirmPass" required autocomplete="off" name="password" >
-      <label class="form-control-placeholder" for="password">Confirm Password</label>
-    </div>
-
-    <div class="form-group forgot-pass-fau text-center ">
-                                    <a href="/terms-conditions/" class="text-secondary">
-                                        By Clicking "SIGN UP" you accept our<br>
-                                        <span class="text-primary-fau">Terms and Conditions</span>
-                                    </a>
-                                </div>
+      <input type="password" class="form-control" id="confirmPass" required autocomplete="off" name="pwConfirm" >
+      <label class="form-control-placeholder" for="pwConfirm">Confirm Password</label>
+    </div> 
 
       <div class="btn-check-log">
           <button type="submit" class="btn-check-login">SIGN UP</button>
       </div>
-          
+      
       <div class="create-new-fau text-center pt-3">
-          
       <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-login" data-dismiss="modal">Already Have An Account</span></a>
       </div>
     </form>
@@ -128,7 +145,7 @@
 
 
 
-  <!-- The Login Modal -->
+  <!-- The LOGIN Modal -->
   <div class="modal fade seminor-login-modal" data-backdrop="static" id="sem-login">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -139,35 +156,33 @@
           <button type="button" class="close" data-dismiss="modal">
               <span><i class="fa fa-times-circle" aria-hidden="true"></i></span>
           </button>
-<!--
             
-           <div id='authError' class="alert alert-danger alert-dismissible fade collapse">
+            <!-- authError goes here  -->
+            
+                    <div id='authError' class="alert alert-danger alert-dismissible fade collapse">
               <div>
                   <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error</h4>
                     <button id="authErrorCloseButton" type="button" class="close" data-dismiss="alert"></button>
                 </div>
             <p> Bad email or password. Please try again.</p>
           </div>
--->
+
      <!-- LOGIN - need to change where it goes-->
-    <form id="loginForm" class="seminor-login-form">
-        
+    <form class="seminor-login-form" id="loginForm">
       <div class="form-group">
-        <input type="email" class="form-control" required autocomplete="off" name="uid" id="email" >
-        <label class="form-control-placeholder" for="uid">Email Address</label>
+        <input type="email" class="form-control" required autocomplete="off" name="e-mail" id="email" >
+        <label class="form-control-placeholder" for="e-mail">Email Address</label>
       </div>
-        
       <div class="form-group">
-        <input type="password" class="form-control" required autocomplete="off" name="password" id="logPassword">
-        <label class="form-control-placeholder" for="password">Password</label>
+        <input type="password" class="form-control" required autocomplete="off" name="pwLog" id="logPassword">
+        <label class="form-control-placeholder" for="pwLog">Password</label>
       </div>
-        
       <div class="form-group">
-            <label class="container-checkbox">
-            Remember Me On This Computer
-            <input type="checkbox" checked="checked" required>
-            <span class="checkmark-box"></span>
-            </label>
+        <label class="container-checkbox">
+        Remember Me On This Computer
+        <input type="checkbox" checked="checked" required>
+        <span class="checkmark-box"></span>
+        </label>
         </div>
 
         <div class="btn-check-log">
@@ -176,29 +191,21 @@
 
 
        <div class="forgot-pass-fau text-center pt-3">
-            <a href="/reset_pass" class="text-secondary">Forgot Your Password?</a>
+                                 <a href="/reset_pass" class="text-secondary">Forgot Your Password?</a>
 
-               </div>
-               <div class="create-new-fau text-center pt-3">
-                   <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-reg" data-dismiss="modal">Create A New Account</span></a>
-               </div>
+                               </div>
+                               <div class="create-new-fau text-center pt-3">
+                                   <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-reg" data-dismiss="modal">Create A New Account</span></a>
+                               </div>
+
+
+
       </form>
 
         </div>
       </div>
     </div>
   </div>
-
-<!--
     
-<script src="https://cdnjs.cloudfare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>   
-<script src="https://cdnjs.cloudfare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudfare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
--->
-
-                                                                                               
-<script src="js/authCtrl.js"></script>
-<script src="js/photo.js"></script>
-
 </body>
 </html>

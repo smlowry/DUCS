@@ -11,17 +11,20 @@ var config = require("../configuration/config.json")
 //use urlencoded instead because we are posting form data
 router.use(bodyParser.urlencoded({extended: true}));
 
-
-
-// For encoding/decoding JWT
 var secret = config.secret;
 
-// Sends a token when given valid username/password
-router.post("/auth", function(req, res) {
 
+// Sends a token when given valid username/password
+router.post("/auth", (req, res)=> {
+
+console.log(req.body.username);
+console.log(req.body.password);
+    
+    
 // Get user from the database
-   User.findOne({ uid: req.body.uid }, function(err, user) {
-      if (err) throw err;
+   User.findOne({ uid: req.body.username }, function(err, user) {
+      if (err)
+          return res.status(500).json({error: "Server Error. Try later."});
        
       if (!user) {
          // Username not in the database
@@ -38,7 +41,7 @@ router.post("/auth", function(req, res) {
                // Send back a token that contains the user's username
                var token = jwt.encode({ uid: user.uid }, secret);
                res.json({ token: token });
-               res.redirect('upload.html')
+//               res.redirect('upload.html')
             }
             else {
                res.status(401).json({ error: "Invalid username/password"});
