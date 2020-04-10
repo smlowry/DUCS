@@ -4,6 +4,7 @@ var db = require("../db");
 var Image = db.model("Image", {
     filename:  String,
     photo_name: String,
+    path: String,
     album: String,
     description: String,
     upload_date: { type: Date, default: Date.now },
@@ -11,7 +12,8 @@ var Image = db.model("Image", {
     s_speed: String,
     iso: String,
     focal_length: String,
-    camera_type: String
+    camera_type: String,
+    owner: String
 });
 
 module.exports = Image;

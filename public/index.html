@@ -1,4 +1,3 @@
-
 <!--suppress ALL -->
 <!DOCTYPE html>
 <html lang="en">
@@ -17,13 +16,19 @@
             background: darkturquoise;
         }
         
-        #right {
+        .headMenuRight {
             text-align: right
         }
         
-        #center {
-            text-align: center
+         .headMenuLeft {
+            text-align: left
+
         }
+
+        #userMenu {
+          display: none
+        }
+
     </style>
     
     <script
@@ -32,46 +37,48 @@
         crossorigin="anonymous">
     </script>
     
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="js/login.js"></script>
+    <script src="js/authCtrl.js"></script>
+    <script src="js/photo.js"></script>
+    
 </head>
 <body>
     
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<div class="container">
+<div id="main" class="container">
     <div class="card border-success mt-5">
         <h1 class="card-header">DUCS Image Album App - Home</h1>
             <div class="card-body">
-                <div class="container" id="right">
+                <div class="headMenuRight" id="loginPanel">
                 
                       <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-login" data-dismiss="modal" id="loginBtn">Login</span></a>
                         &nbsp; &nbsp; &nbsp; &nbsp;
                       <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-reg" data-dismiss="modal">Create A New Account</span></a>
                     
                  </div>
-                 <div class="container" id="center">
-                <h5>Welcome </h5>
-                <p>This home page is not complete. </p>
+                 <div class="headMenuLeft" id="userMenu">
+                    <button id="menuPhotos" type="button" class="btn btn-link">Photos</button>
                 </div>
+                 <div id="welcomeMsg" class="headMenuRight">
+                    <span></span>
+                </div>
+          </div>
+    </div>
+    <div class="card border-success mt-5">
+        <div class="card-body">
+            <p>Homepage will be finished on a later Sprint.
+            </p>
         </div>
     </div>
 </div>
-<!--
+
     
-// Create a model from the schema
-var User = db.model("User", {
-    uid:  { type: String, required: true },
-    password:  { type: String, required: true },
-    full_name: { type: String, required: true },
-    date_created: { type: Date, default: Date.now },
-    status:    String
-});
--->
     
-<!-- The Modal -->
+    
+<!-- The REGISTER Modal -->
 <div class="modal fade seminor-login-modal" data-backdrop="static" id="sem-reg">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -84,34 +91,49 @@ var User = db.model("User", {
         </button>
 
 
-  <form class="seminor-login-form" action="api/users" method="post">
+  <form class="seminor-login-form" id="regForm">
+      
+      <!-- dupError goes here -->
+       <div id='dupError' class="alert alert-danger alert-dismissible fade collapse">
+              <div>
+                <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error</h4>
+                <button id="dupErrorCloseButton" type="button" class="close" data-dismiss="alert"></button>
+              </div>
+              <p>User Exists - Use a different email to create an account.</p>
+          </div>
+      
     <div class="form-group">
-      <input type="email" class="form-control" required autocomplete="off" name="uid" id="uidAcc">
-      <label class="form-control-placeholder" for="uid">Email address</label>
+      <input type="email" class="form-control" id="username" required autocomplete="off" name="userName">
+      <label class="form-control-placeholder" for="userName">Email address</label>
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" required autocomplete="off" name="full_name" id="full_nameAcc">
+      <input type="text" class="form-control" id="name" required autocomplete="off" name="full_name">
       <label class="form-control-placeholder" for="full_name">Full Name</label>
     </div>
+      
+      <!-- passError goes here  -->
+              <div id='passError' class="alert alert-danger alert-dismissible fade collapse">
+          <div>
+              <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error</h4>
+                <button id="passErrorCloseButton" type="button" class="close" data-dismiss="alert"></button>
+            </div>
+            <p>Password Mismatch - The passwords you enter must match.</p>
+          </div>
+      
+      
     <div class="form-group">
-      <input type="password" class="form-control" required autocomplete="off" name="password" id="passwordAcc">
+      <input type="password" class="form-control" id="password" required autocomplete="off" name="password">
       <label class="form-control-placeholder" for="password">Password</label>
     </div>
     <div class="form-group">
-      <input type="password" class="form-control" required autocomplete="off" name="passwordcon" id="passwordcon">
-      <label class="form-control-placeholder" for="passwordcon">Confirm Password</label>
-    </div>
-
-    <div class="form-group forgot-pass-fau text-center ">
-                                    <a href="/terms-conditions/" class="text-secondary">
-                                        By Clicking "SIGN UP" you accept our<br>
-                                        <span class="text-primary-fau">Terms and Conditions</span>
-                                    </a>
-                                </div>
+      <input type="password" class="form-control" id="confirmPass" required autocomplete="off" name="pwConfirm" >
+      <label class="form-control-placeholder" for="pwConfirm">Confirm Password</label>
+    </div> 
 
       <div class="btn-check-log">
           <button type="submit" class="btn-check-login">SIGN UP</button>
       </div>
+      
       <div class="create-new-fau text-center pt-3">
       <a href="#" class="text-primary-fau"><span data-toggle="modal" data-target="#sem-login" data-dismiss="modal">Already Have An Account</span></a>
       </div>
@@ -125,7 +147,7 @@ var User = db.model("User", {
 
 
 
-  <!-- The Modal -->
+  <!-- The LOGIN Modal -->
   <div class="modal fade seminor-login-modal" data-backdrop="static" id="sem-login">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -136,16 +158,26 @@ var User = db.model("User", {
           <button type="button" class="close" data-dismiss="modal">
               <span><i class="fa fa-times-circle" aria-hidden="true"></i></span>
           </button>
+            
+            <!-- authError goes here  -->
+            
+                    <div id='authError' class="alert alert-danger alert-dismissible fade collapse">
+              <div>
+                  <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Error</h4>
+                    <button id="authErrorCloseButton" type="button" class="close" data-dismiss="alert"></button>
+                </div>
+            <p> Bad email or password. Please try again.</p>
+          </div>
 
      <!-- LOGIN - need to change where it goes-->
-    <form class="seminor-login-form" action="api/auth" method="post">
+    <form class="seminor-login-form" id="loginForm">
       <div class="form-group">
-        <input type="email" class="form-control" required autocomplete="off" name="uid" id="uid" >
-        <label class="form-control-placeholder" for="uid">Email Address</label>
+        <input type="email" class="form-control" required autocomplete="off" name="e-mail" id="email" >
+        <label class="form-control-placeholder" for="e-mail">Email Address</label>
       </div>
       <div class="form-group">
-        <input type="password" class="form-control" required autocomplete="off" name="password" id="password">
-        <label class="form-control-placeholder" for="password">Password</label>
+        <input type="password" class="form-control" required autocomplete="off" name="pwLog" id="logPassword">
+        <label class="form-control-placeholder" for="pwLog">Password</label>
       </div>
       <div class="form-group">
         <label class="container-checkbox">
