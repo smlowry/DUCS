@@ -2,7 +2,7 @@ const Image = require('../models/image');
 const User = require('../models/user');
 const router = require("express").Router();
 const multer = require("multer");
-//const mthumb = require('../media-thumbnail');
+const thumb = require('node-thumbnail').thumb;
 const path = require("path")
 const fs = require('fs');
 const crypto = require("crypto")
@@ -11,7 +11,6 @@ const config =require("../configuration/config.json")
  
 const DEBUG = true;
 var secret = config.secret;
-
 // SET STORAGE
 var storage = multer.diskStorage({
       destination: (req, file, cb) => {
@@ -44,7 +43,8 @@ router.get("/", (req, res)=> {
         return res.status(401).json({error: "Invalid JWT"});
    }
 
-   let usr = decoded.username; 
+   //change username to uid
+   let usr = decoded.uid; 
 
    User.findOne({uid: usr}, (err,user)=>{
        if (err) {
@@ -72,14 +72,9 @@ router.get("/", (req, res)=> {
     });
 });
 
-
-
-
-
-
-
 // Add a new image to the database
 router.post('/', upload.single('photo'), (req, res)=> {
+    console.log("image upload called");
     //log the file and upload to console
     if (req.file) {
         console.log("file: " + req.body.photoName +" saved on.");
@@ -118,74 +113,57 @@ router.post('/', upload.single('photo'), (req, res)=> {
     // 2. decode token to get user name (usr)
 
     if (DEBUG)
-        console.log("Image upload User is: " + decoded.username);
+        console.log("Image upload User is: " + decoded.uid);
 
-    let usr = decoded.username;
-    User.findOne({uid: usr}, (err, user)=> {
-     if (err) {
-        if (DEBUG)
-            console.log("Invalid JWT: user not found");
-        return res.status(400).json({error: "Invalid JWT"})
-	 }
-     if (DEBUG)
-        console.log("Generating the image subdir for: " + user.uid)
+    let usr = decoded.uid;
+    console.log(usr);
+    User.findOne({uid: usr}, (err, user)=>{
+        if (err){
+            return res.status(400).json ({error: "Invalid JWT"});
+        }
+        console.log(user);
+        let userSubdir = crypto.createHash("sha256").update(user.uid).digest("hex");
+        console.log("userSubDir = "+ userSubdir);
 
-    // 3. generate the path as imgPath = sha256 of usr.uid
-    let userSubdir = crypto.createHash('sha256').update(user.uid).digest("hex");
-    if (DEBUG)
-        console.log("User Image Path: " + userSubdir);
+        let from = "upload/" + req.file.filename;
+        let to = "public/images/" + userSubdir + "/" + req.file.filename;
 
-    // 4. copt the file from uploads to images/imgPath/filename
+        fs.copyFile(from, to, (err)=>{
+            if (err){
+                return res.status(507).json({error: "Image upload failed"})
+            }
+        });
 
-    let from = "upload/" + req.file.filename;
-    let to = "public/images/" + userSubdir + "/" + req.file.filename;
-    fs.copyFile(from, to, (err)=> {
-        if (err) {
-            if (DEBUG)
-                console.log("Image copy from upload to " + to + " failed")
-            return res.status(507).json({error: "Image upload failed", errMsg: err}); 
-		}
-	});
 
-    if (DEBUG)
-        console.log("making the thumbnail image");
+       let thumbFrom = "public/images/" + userSubdir + "/" + req.file.filename;
+       let thumbTo   = "public/images/" + userSubdir + "/thumbs/";
+       thumb({
+            source: thumbFrom,
+            destination: thumbTo,
+       }).then(function(){
+           console.log("Thumbnail successfully created!");
+       }
+       ).catch(function(e){
+           console.log("Error creating thumbnail:", e.toString());
+       });
 
-    // make a thumbnail of the image
-    let thumb = "public/images/" + userSubdir + "/thumbs" + req.file.filename;
+    
 
-    if (DEBUG)
-        console.log("thumbnail image: " + thumb);
+        //Deletes image from upload
+        fs.unlink(from, (err)=>{
+            if (err){
+                console.log("Image was not deleted from upload folder.");
+            }
+            else{
+                console.log("Image succesfully deleted from upload folder.");
+            }
+        });
 
-        mthumb.forImage(
-            to,
-            thumb,
-            {
-                width: 125
-			})
-            
-            .then(() => console.log("Thumbnail made"),
-                   err => console.error(err));
-                        
-
-        if (DEBUG)
-            console.log("Uploaded File copied to images subdirectory");
-
-        //check to see if file was copied
-        //he commented this part out
-
-        //5. devare the file from uploads
-        fs.unlink(from, (err)=> {
-            if (err) {
-                console.log("File " + from + " was not devared.");
-			}  
-            console.log("File " + from + " was not devared.");
-		});
-         
-        // 6. make new image doc and save the image information in db
-        // make new Image object from the input data
-         var img = new Image({
+        console.log("Posting a new image!");
+        var image = new Image({
             filename: req.file.filename,
             photo_name: req.body.photoName,
+            owner: user.uid,
             path: userSubdir,
             album: req.body.album,
             upload_date: new Date(),
@@ -194,20 +172,17 @@ router.post('/', upload.single('photo'), (req, res)=> {
             s_speed: req.body.s_speed,
             iso: req.body.iso,
             focal_length: req.body.focal_length,
-            camera_type: req.body.camera_type,
-            owner: user.uid
+            camera_type: req.body.camera_type
+
         });
 
         //save the image to the database
 	
-        //var image = new Image(req.body);
+        var image = new Image(req.body);
     
-        img.save((err, img)=> {
+        image.save((err, img)=> {
             if (err) {
                 res.status(400).send(err);
-            } else {
-                //refactor???
-                res.redirect('/home.html');
             }
         });
     });

@@ -9,7 +9,7 @@ const crypto = require('crypto')
 const jwt = require('jwt-simple')
 const config = require('../configuration/config.json');
 
-const DEBUG = false;
+const DEBUG = true;
 
 var secret = config.secret;
 
@@ -42,7 +42,7 @@ router.get('/', (req,res)=> {
         return res.status(401).json({error: "Invalid JWT"});
     }
     
-    let usr = decoded.username;
+    let usr = decoded.uid;
 
     
     User.findOne({uid: usr}, (err, user)=> {
@@ -55,11 +55,13 @@ router.get('/', (req,res)=> {
         if (DEBUG)
             console.log("Get page: " + req.query.pageid + " for " + user.uid);
         
+            //not finding user
+
         if (user) {
             // assert user authentication
             // 2. if autheticated
             // 2.1 find pageID in database
-            Page.findOne({pageID: req.query.pageid},(err, page)=> {
+            Page.findOne({pageID: req.query.pageId},(err, page)=> {
                 if (err) {
                     if (DEBUG)
                         console.log("Page: " + req.query.pageid + " not found");
@@ -72,7 +74,7 @@ router.get('/', (req,res)=> {
                     //assert page was found
                     // 2.2.1 return status 200 and 2.2.2 return with pageName
                     let path2Page = path.resolve("pages/" + page.pageName);
-                    return res.status(200).sendFile(path2page);
+                    return res.status(200).sendFile(path2Page);
                 }
                 else {
                     // page was not found

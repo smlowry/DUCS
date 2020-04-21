@@ -23,6 +23,7 @@ console.log(req.body.password);
     
 // Get user from the database
    User.findOne({ uid: req.body.username }, (err, user)=> {
+      // console.log(user.full_name);
       if (err)
           return res.status(500).json({error: "Server Error. Try later."});
        
@@ -41,8 +42,8 @@ console.log(req.body.password);
             else if (valid) {
                // Send back a token that contains the user's username
                let token = jwt.encode({ uid: user.uid }, secret);
-               res.json({ token: token });
-//               res.redirect('upload.html')
+               res.json({ token: token, full_name: user.full_name });
+               //res.redirect('upload.html')
             }
             else {
                res.status(401).json({ error: "Invalid username/password"});
