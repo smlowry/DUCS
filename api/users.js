@@ -1,4 +1,5 @@
 // api/users.js
+
 const jwt = require("jwt-simple");
 const User = require("../models/user");
 const router = require("express").Router();
@@ -38,23 +39,24 @@ router.post("/users", (req, res)=> {
           }
         //create a hash for the submitted password
         bcrypt.hash(req.body.password, null, null, (err, hash) => {  
-            
-        
-        var newUser = new User({
-            //change from uid to username?
 
-          
+    
+        var newUser = new User({
+           
           uid: req.body.username,
           password: hash,
           full_name: req.body.full_name,
           date_created: new Date()
-        });
+
+       });
+
         // create the users image storage
         if (DEBUG)
             console.log("New user: " + newUser.uid);
         let usrDir = crypto.createHash('sha256').update(newUser.uid).digest("hex");
         
         if (DEBUG)
+
             console.log("making dir: " + usrDir + " for user " + newUser.uid);
             
             let newDir = "public/images/" + usrDir;
@@ -81,19 +83,19 @@ router.post("/users", (req, res)=> {
                 
                 //assert: both directories are created
                 //save the user
+              
                  newUser.save((err) => {
                          if (err) {
                              return res.status(500).json({error: "Server Error"});
                          }
                          res.status(201).json({success: "User created."}) ;  // Created
+
                       });
                     });
                 });
         });
       }
     });
- 
-    
 }); 
 
 module.exports = router;

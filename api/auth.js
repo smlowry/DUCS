@@ -22,7 +22,7 @@ console.log("Password: " + req.body.password);
     
 // Get user from the database
    User.findOne({ uid: req.body.username }, (err, user)=> {
-      // console.log(user.full_name);
+
       if (err)
           return res.status(500).json({error: "Server Error. Try later."});
        

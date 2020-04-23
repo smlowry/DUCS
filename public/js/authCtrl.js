@@ -2,12 +2,13 @@
 
 $(document).ready(function() {
     
-
     //handle login
     $('#loginForm').on('submit',(e)=> {
         e.preventDefault();
         
+
         $('#authError').hide();
+
         
         let loginData = {
             username: $('#email').val(),
@@ -21,6 +22,7 @@ $(document).ready(function() {
             contentType: "application/json",
             statusCode: {
                 401: (resObj, textStatus, jqXHR)=> {
+
                 $('#authError').show();
                 $('#authError').addClass('show');
                 }
@@ -63,6 +65,7 @@ $(document).ready(function() {
     });
     
     //handle submission
+
     $('#regForm').on("submit", (e)=> {
         console.log("Submitting correctly");
         e.preventDefault();
@@ -71,10 +74,12 @@ $(document).ready(function() {
         $('#passError').hide();
         if ($('#password').val() == $('#confirmPass').val()) {
             console.log("passwords are equal");
+
             //passwords are equal and rest of data validated
             //save the user
             let reqData = { username: $('#username').val(),
                             password: $('#password').val(),
+
                             full_name: $('#name').val()
                           };
             
@@ -85,6 +90,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "POST",
                 url: "api/users",
+
                 data: JSON.stringify(reqData),
                 contentType: "application/json",
                 statusCode: {
@@ -96,6 +102,7 @@ $(document).ready(function() {
                         $('#username').focus().select();
                         $('#duperror').show();
                         $('#dupError').addClasss('show');
+
                     }
                 }
             })
@@ -104,6 +111,7 @@ $(document).ready(function() {
                     alert('Error Reported: ' + jqXHR.status + '\n' + jqXHR.statusText);
                     }
             });
+
         }
         else {
             // passwords do not match display error message
@@ -115,7 +123,6 @@ $(document).ready(function() {
         
             return false;
         });
-    
     
     // //get Photos page
     // $('#menuPhotos').on('click', (e)=> {
@@ -186,5 +193,6 @@ $(document).ready(function() {
         $('#uploadCard').hide();
 
    });
+
 
 });

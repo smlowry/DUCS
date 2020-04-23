@@ -2,6 +2,7 @@
 function loadImages() {
 
 
+
     //get the user's token
     console.log("loadImages function:");
 
@@ -13,6 +14,7 @@ function loadImages() {
         console.log("Data: " + data);
         //create the card for the recent images
         let html = '<div class="card border-success mt-3">\n' + '<h2 class="card-header">Recent Images</h2>\n' + '<div class="card-body">\n';
+
         
         // put the image thumbnails in a single card
         for (var i=0; i<data.length; i++) {
@@ -27,10 +29,11 @@ function loadImages() {
         $('#imageArea').html(html);
         console.log("Token: " + token);
     })
+
     .fail(function(jqXHR) {
+
         alert("Image Query Failed: \nStatus: " + jqXHR.statusCode + " : " + jqXHR.statusText);
     });
 }
-
 
 
