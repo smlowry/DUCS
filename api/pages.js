@@ -9,7 +9,8 @@ const crypto = require('crypto')
 const jwt = require('jwt-simple')
 const config = require('../configuration/config.json');
 
-const DEBUG = true;
+
+const DEBUG = false;
 
 var secret = config.secret;
 

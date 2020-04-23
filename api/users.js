@@ -1,15 +1,5 @@
 // api/users.js
 
-// Sprint-3 TO DO: 
-
-//1. Modify database to support images that belong to a particular user.
-
-//2. Design a user specific home page that displays only the images for that user.
-
-//3. Display the images shown on the home page as thumbnails. Organized with a section of most recent images. Outside the most recent section, the images should be organized by date taken.
-
-//4. Allow the user access to the their home page only if they have been authenticated. (ie. only if they have logged in)
-
 const jwt = require("jwt-simple");
 const User = require("../models/user");
 const router = require("express").Router();
@@ -49,24 +39,28 @@ router.post("/users", (req, res)=> {
           }
         //create a hash for the submitted password
         bcrypt.hash(req.body.password, null, null, (err, hash) => {  
+
     
         var newUser = new User({
-            //change from uid to username?
+           
           uid: req.body.username,
           password: hash,
           full_name: req.body.full_name,
           date_created: new Date()
+
        });
+
         // create the users image storage
         if (DEBUG)
             console.log("New user: " + newUser.uid);
         let usrDir = crypto.createHash('sha256').update(newUser.uid).digest("hex");
         
         if (DEBUG)
-            console.log("making dir: " + userDir + " for user " + newUSer.uid);
+
+            console.log("making dir: " + usrDir + " for user " + newUser.uid);
             
             let newDir = "public/images/" + usrDir;
-         fs.mkdir(newDir, (err) =>{
+        fs.mkdir(newDir, (err) =>{
             if (err) {
                 if (DEBUG)
                     console.log('new directory not created');
@@ -89,18 +83,19 @@ router.post("/users", (req, res)=> {
                 
                 //assert: both directories are created
                 //save the user
-                 newuser.save((err) => {
+              
+                 newUser.save((err) => {
                          if (err) {
                              return res.status(500).json({error: "Server Error"});
                          }
-                         res.sendStatus(201).json({success: "User created."}) ;  // Created
+                         res.status(201).json({success: "User created."}) ;  // Created
+
                       });
                     });
                 });
         });
       }
     });
- 
 }); 
 
 module.exports = router;
