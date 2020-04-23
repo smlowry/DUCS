@@ -8,7 +8,7 @@ const fs = require("fs");
 const crypto = require("crypto")
 const config = require("../configuration/config.json")
 
-const DEBUG = true;
+const DEBUG = false;
 
 var secret = config.secret;
 router.use(bodyParser.json())

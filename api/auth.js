@@ -16,9 +16,8 @@ var secret = config.secret;
 //Sends a token when given valid username/password
 router.post("/auth", (req, res)=> {
 
-
-console.log(req.body.username);
-console.log(req.body.password);
+console.log("Username: " + req.body.username);
+console.log("Password: " + req.body.password);
 
     
 // Get user from the database

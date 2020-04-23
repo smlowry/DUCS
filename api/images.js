@@ -60,8 +60,10 @@ router.get("/", (req, res)=> {
            Image.find({owner: user.uid},(err, img)=> {
                if (err) {
                     res.status(500).json({error: "Server error"});  
-		       }
+               }
+               
                else {
+                    console.log(img);
                     res.status(201).json(img)  
 		       }
             });
@@ -159,6 +161,8 @@ router.post('/', upload.single('photo'), (req, res)=> {
             }
         });
 
+        console.log("")
+
         console.log("Posting a new image!");
         var image = new Image({
             filename: req.file.filename,
@@ -177,8 +181,6 @@ router.post('/', upload.single('photo'), (req, res)=> {
         });
 
         //save the image to the database
-	
-        var image = new Image(req.body);
     
         image.save((err, img)=> {
             if (err) {
