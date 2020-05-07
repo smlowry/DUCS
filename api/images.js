@@ -11,7 +11,6 @@ const config =require("../configuration/config.json")
  
 const DEBUG = true;
 var secret = config.secret;
-
 // SET STORAGE
 var storage = multer.diskStorage({
       destination: (req, file, cb) => {
@@ -44,7 +43,7 @@ router.get("/", (req, res)=> {
         return res.status(401).json({error: "Invalid JWT"});
    }
 
-
+   //change username to uid
    let usr = decoded.uid; 
 
    User.findOne({uid: usr}, (err,user)=>{
@@ -65,7 +64,6 @@ router.get("/", (req, res)=> {
                
                else {
                     console.log(img);
-
                     res.status(201).json(img)  
 		       }
             });
@@ -76,11 +74,9 @@ router.get("/", (req, res)=> {
     });
 });
 
-
 // Add a new image to the database
 router.post('/', upload.single('photo'), (req, res)=> {
     console.log("image upload called");
-
     //log the file and upload to console
     if (req.file) {
         console.log("file: " + req.body.photoName +" saved on.");
@@ -119,7 +115,6 @@ router.post('/', upload.single('photo'), (req, res)=> {
     // 2. decode token to get user name (usr)
 
     if (DEBUG)
-
         console.log("Image upload User is: " + decoded.uid);
 
     let usr = decoded.uid;
@@ -181,7 +176,6 @@ router.post('/', upload.single('photo'), (req, res)=> {
             s_speed: req.body.s_speed,
             iso: req.body.iso,
             focal_length: req.body.focal_length,
-
             camera_type: req.body.camera_type
 
         });
@@ -191,7 +185,6 @@ router.post('/', upload.single('photo'), (req, res)=> {
         image.save((err, img)=> {
             if (err) {
                 res.status(400).send(err);
-
             }
         });
     });
