@@ -1,4 +1,6 @@
-//authCtrl.js
+// authCtrl.js
+// This page controls elements of the index.html page
+// Such as: handling buttons, adding images, and showing and hiding cards
 
 $(document).ready(function() {
     
@@ -44,7 +46,8 @@ $(document).ready(function() {
                 window.localStorage.removeItem('token');
             });
             $('#sem-login').modal('toggle');
-            window.localStorage.setItem("token", data.token);   
+            window.localStorage.setItem("token", data.token);
+            console.log(data.token);   
         });
         return false;
     });
@@ -182,9 +185,6 @@ $(document).ready(function() {
             contentType: false, 
             processData: false
         });
-
         $('#uploadCard').hide();
-
    });
-
 });

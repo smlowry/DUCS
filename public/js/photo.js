@@ -1,4 +1,8 @@
-//load the image from the database
+// photo.js
+// This page contains the loadImages() function
+// which is responsible for retrieving images for individual users
+// and sorting them into their respective albums
+
 function loadImages() {
 
 
@@ -22,6 +26,37 @@ function loadImages() {
         }
         //close card
         html +='</div\n</div>\n';
+    
+        const unique = (value, index, self) => {
+            return self.indexOf(value) === index
+          }
+        
+        // create an array of all albums from each image (including duplicates)
+        albumArray = []; 
+
+        for (i=0; i<data.length; i++) {
+            albumArray.push(data[i].album)
+        }
+
+        // create a new array of all albums for each image - this time remove all duplicate albums
+        const uniqueAlbums = albumArray.filter(unique);
+
+        for (i=0; i<uniqueAlbums.length; i++) {
+
+            // create a card for each unique album
+            html += '<div class="card border-success mt-3">\n' + '<h2 class="card-header">Album - ' +uniqueAlbums[i]+ '</h2>\n' + '<div class="card-body">\n';
+            
+             //add the user's images to their respective albums
+            for (var j=0; j<data.length; j++) {
+
+                if (data[j].album == uniqueAlbums[i]) {
+                html += '<img class="thumbImg" src="images/' +data[j].path + '/thumbs/' + data[j].filename + '">\n';
+                }
+            }
+
+            html +='</div\n</div>\n';
+        }
+
         console.log("Full html: " + html);
         //put in the image area
         $('#imageArea').html(html);
