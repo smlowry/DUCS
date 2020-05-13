@@ -1,3 +1,7 @@
+// api/images.js
+// This api route stores and retrieves images for individual
+// users using mySQL database.
+
 const Image = require('../models/image');
 const User = require('../models/user');
 const Conn = require("../mysqldb");
@@ -28,7 +32,6 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 
 // Get list of all images in the database
-// Change to mySQL
 router.get("/", (req, res)=> {
 
    // 1. get the user's token'
@@ -49,13 +52,10 @@ router.get("/", (req, res)=> {
         return res.status(401).json({error: "Invalid JWT"});
    }
 
-   //change username to uid
    let usr = decoded.uid; 
    console.log("usr = " + usr);
 
-
-   //HERE
-
+    // Find user 
     let qry = "SELECT uid, password, full_name FROM User WHERE uid = ?";
 
     Conn.query(qry, usr, (err, rows) => {
@@ -143,6 +143,7 @@ router.post('/', upload.single('photo'), (req, res)=> {
 
     console.log("usr = " + usr);
 
+
     let qry = "SELECT uid, password, full_name FROM User WHERE uid = ?";
 
     Conn.query(qry, usr, (err, rows) => {
@@ -189,6 +190,7 @@ router.post('/', upload.single('photo'), (req, res)=> {
 
         console.log("Posting a new image!");
 
+        // create the new image
         var newImage = {
             filename: req.file.filename,
             photo_name: req.body.photoName,
@@ -204,14 +206,7 @@ router.post('/', upload.single('photo'), (req, res)=> {
             owner: rows[0].uid
         };
 
-        //save the image to the database
-    
-        // image.save((err, img)=> {
-        //     if (err) {
-        //         res.status(400).send(err);
-        //     }
-        // });
-
+        // store the image in mySQL
         Conn.query("INSERT INTO Image SET ?", newImage, (err, result)=> {
             if (err){
                 console.log("Trouble inserting image");

@@ -1,4 +1,6 @@
-// 1. api/page?pageid=#### was added in Sprint 3
+// api/page?pageid=#### 
+
+// Decided not to use pages - this page does nothing
 
 const Page = require('../models/page');
 const User = require('../models/user')

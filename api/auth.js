@@ -1,4 +1,5 @@
 // api/auth.js
+// This page authenticates a user using mySQL so that they can login to their account.
 
 const jwt = require("jwt-simple");
 const User = require("../models/user");
@@ -9,59 +10,16 @@ const Conn = require("../mysqldb");
 
 var config = require("../configuration/config.json") //for encoding/decoding JWT
 
-//router.use(bodyParser.json()); //use urlencoded instead because we are posting form data
-
 router.use(bodyParser.urlencoded({extended: true}));
 
 var secret = config.secret;
 
 const DEBUG = false;
-
-
-//Sprint 3 Code
-
-//Sends a token when given valid username/password
-// router.post("/auth", (req, res)=> {
-    
-// Get user from the database
-   // User.findOne({ uid: req.body.username }, (err, user)=> {
-   //    // console.log(user.full_name);
-   //    if (err)
-   //        return res.status(500).json({error: "Server Error. Try later."});
-       
-   //    if (!user) {
-   //       // Username not in the database
-   //       res.status(401).json({ error: "Invalid username/password"});
-   //    }
-   //    else {
-   //       // Does given password hash match the database password hash?
-         
-   //       bcrypt.compare(req.body.password, user.password, 
-   //                      (err, valid)=> {
-   //          if (err) {
-   //             res.status(400).json({ error: err});
-   //          }
-   //          else if (valid) {
-   //             // Send back a token that contains the user's username
-   //             let token = jwt.encode({ uid: user.uid }, secret);
-   //             res.json({ token: token, full_name: user.full_name });
-   //             //res.redirect('upload.html')
-   //          }
-   //          else {
-   //             res.status(401).json({ error: "Invalid username/password"});
-   //          }
-   //       });
-   //    }
-   // });
-
    
    //user authetication route
    router.post("/auth", (req,res)=>{
 
-      console.log("Username: " + req.body.username);
-      console.log("Password: " + req.body.password);
-
-      //check if user is in database
+      //check if user is in mySQL database
       let qry = "select uid, password, full_name from User where uid = ?;";
       if (DEBUG)
          console.log("query: " + qry);
@@ -76,6 +34,7 @@ const DEBUG = false;
             console.log("User found " + rows[0]);
          }
          else {
+            //compare passwords; if valid return token and full_name
             bcrypt.compare(req.body.password, rows[0].password, (err, valid)=>{
                   if (err) {
                      res.status(400).json({ error: err});
@@ -90,7 +49,5 @@ const DEBUG = false;
          }
       })
    });
-
-
 
 module.exports = router;
