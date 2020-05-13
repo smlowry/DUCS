@@ -9,7 +9,7 @@ const fs = require("fs");
 const crypto = require("crypto")
 const config = require("../configuration/config.json")
 
-const DEBUG = false;
+const DEBUG = true;
 
 var secret = config.secret;
 router.use(bodyParser.json())
@@ -44,10 +44,11 @@ router.post("/users", (req, res)=> {
             admin: 0
         };
 
-
         // create the users image storage
 
         Conn.query("INSERT INTO User SET ?", newUser, (err, result)=> {
+        
+            console.log("New user inserted as " + newUser);
 
             if (err){
               console.log("Trouble inserting user");
@@ -81,11 +82,14 @@ router.post("/users", (req, res)=> {
                             return res.status(400).json({error: "thumbs subdirectory not created"});
                         }
                         else {
-                            
+
                             console.log("User successfully saved")
-                            var token = jwt.encode({uid: newUser.uid }, secret);
-                            res.json({token: token})
-                        }
+                            var token = jwt.encode({uid: rows[0].uid}, secret);
+                                return res.json({
+                                    //full_name: full_name,
+                                    token: token
+                                })
+                            }
                         });
                     });
                 }

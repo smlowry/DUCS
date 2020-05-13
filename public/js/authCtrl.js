@@ -44,7 +44,8 @@ $(document).ready(function() {
                 window.localStorage.removeItem('token');
             });
             $('#sem-login').modal('toggle');
-            window.localStorage.setItem("token", data.token);   
+            window.localStorage.setItem("token", data.token);
+            console.log(data.token);   
         });
         return false;
     });

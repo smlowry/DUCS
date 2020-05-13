@@ -1,17 +1,20 @@
 const Image = require('../models/image');
 const User = require('../models/user');
+const Conn = require("../mysqldb");
 const router = require("express").Router();
 const multer = require("multer");
 const thumb = require('node-thumbnail').thumb;
-const path = require("path")
+const path = require("path");
 const fs = require('fs');
-const crypto = require("crypto")
-const jwt = require("jwt-simple")
-const config =require("../configuration/config.json")
+const crypto = require("crypto");
+const jwt = require("jwt-simple");
+const config = require("../configuration/config.json");
  
 const DEBUG = true;
+
 var secret = config.secret;
 // SET STORAGE
+
 var storage = multer.diskStorage({
       destination: (req, file, cb) => {
         cb(null, 'upload')
@@ -25,11 +28,14 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 
 // Get list of all images in the database
+// Change to mySQL
 router.get("/", (req, res)=> {
-   
+
    // 1. get the user's token'
    let token = req.query.u;
-    
+
+   console.log("token = " + token)
+   console.log()
    // 2. decode the token and validate the User
    let decoded
    try {
@@ -45,19 +51,32 @@ router.get("/", (req, res)=> {
 
    //change username to uid
    let usr = decoded.uid; 
+   console.log("usr = " + usr);
 
-   User.findOne({uid: usr}, (err,user)=>{
+
+   //HERE
+
+    let qry = "SELECT uid, password, full_name FROM User WHERE uid = ?";
+
+    Conn.query(qry, usr, (err, rows) => {
+
        if (err) {
             if (DEBUG)
                 console.log("Server error trying to find user.");
             return res.status(500).json({error: "Server error"});
 	   }
        if (DEBUG)
-            console.log("get all images for user: " + user.uid);
+            console.log("get all images for user: " + rows[0].uid);
 
-       if (user) {
+       if (rows = 1) {
            // 3. Find the user's images
-           Image.find({owner: user.uid},(err, img)=> {
+
+           let qry = "SELECT * FROM Image Where owner = ?";
+
+           Conn.query(qry, usr, (err, img) => {
+       
+
+
                if (err) {
                     res.status(500).json({error: "Server error"});  
                }
@@ -79,6 +98,7 @@ router.post('/', upload.single('photo'), (req, res)=> {
     console.log("image upload called");
     //log the file and upload to console
     if (req.file) {
+        console.log(req.body);
         console.log("file: " + req.body.photoName +" saved on.");
     }
     else {
@@ -101,10 +121,12 @@ router.post('/', upload.single('photo'), (req, res)=> {
         console.log("token is: " + token);
         
     let decoded;
+    
     try {
         if (DEBUG)
             console.log("trying to decode token");
         decoded = jwt.decode(token, secret);
+        console.log("decoded = " + decoded);
 	}
     catch (ex) {
         if (DEBUG)
@@ -118,13 +140,17 @@ router.post('/', upload.single('photo'), (req, res)=> {
         console.log("Image upload User is: " + decoded.uid);
 
     let usr = decoded.uid;
-    console.log(usr);
-    User.findOne({uid: usr}, (err, user)=>{
+
+    console.log("usr = " + usr);
+
+    let qry = "SELECT uid, password, full_name FROM User WHERE uid = ?";
+
+    Conn.query(qry, usr, (err, rows) => {
+
         if (err){
             return res.status(400).json ({error: "Invalid JWT"});
         }
-        console.log(user);
-        let userSubdir = crypto.createHash("sha256").update(user.uid).digest("hex");
+        let userSubdir = crypto.createHash("sha256").update(rows[0].uid).digest("hex");
         console.log("userSubDir = "+ userSubdir);
 
         let from = "upload/" + req.file.filename;
@@ -161,31 +187,38 @@ router.post('/', upload.single('photo'), (req, res)=> {
             }
         });
 
-        console.log("")
-
         console.log("Posting a new image!");
-        var image = new Image({
+
+        var newImage = {
             filename: req.file.filename,
             photo_name: req.body.photoName,
-            owner: user.uid,
             path: userSubdir,
             album: req.body.album,
-            upload_date: new Date(),
             description: req.body.description,
             f_stop: req.body.f_stop,
             s_speed: req.body.s_speed,
             iso: req.body.iso,
-            focal_length: req.body.focal_length,
-            camera_type: req.body.camera_type
-
-        });
+            focal_len: req.body.focal_length,
+            camera: req.body.camera_type,
+            upload_date: new Date(),
+            owner: rows[0].uid
+        };
 
         //save the image to the database
     
-        image.save((err, img)=> {
-            if (err) {
+        // image.save((err, img)=> {
+        //     if (err) {
+        //         res.status(400).send(err);
+        //     }
+        // });
+
+        Conn.query("INSERT INTO Image SET ?", newImage, (err, result)=> {
+            if (err){
+                console.log("Trouble inserting image");
+                console.log(err);
                 res.status(400).send(err);
-            }
+                
+              }  
         });
     });
 });

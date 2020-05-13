@@ -83,7 +83,7 @@ const DEBUG = false;
                   else if (valid) {
                      let commaPos = rows[0].full_name.indexOf(',');
                      let full_name = rows[0].full_name.substring(commaPos+1);
-                     let token = jwt.encode({username: rows[0].uid}, secret);
+                     let token = jwt.encode({uid: rows[0].uid}, secret);
                      res.json({token: token, full_name: full_name});
                   }
             })
